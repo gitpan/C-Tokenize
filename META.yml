@@ -18,4 +18,7 @@ no_index:
     - t
     - inc
 requires: {}
-version: 0.01
+resources:
+  bugtracker: https://github.com/benkasminbullock/C-Tokenize/issues
+  repository: https://github.com/benkasminbullock/C-Tokenize
+version: 0.02

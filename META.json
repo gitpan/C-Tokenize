@@ -35,5 +35,13 @@
       }
    },
    "release_status" : "stable",
-   "version" : "0.01"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/benkasminbullock/C-Tokenize/issues"
+      },
+      "repository" : {
+         "url" : "https://github.com/benkasminbullock/C-Tokenize"
+      }
+   },
+   "version" : "0.02"
 }
