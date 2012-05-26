@@ -31,7 +31,9 @@
          }
       },
       "runtime" : {
-         "requires" : {}
+         "requires" : {
+            "perl" : "5.010001"
+         }
       }
    },
    "release_status" : "stable",
@@ -43,5 +45,5 @@
          "url" : "https://github.com/benkasminbullock/C-Tokenize"
       }
    },
-   "version" : "0.02"
+   "version" : "0.03"
 }
