@@ -15,10 +15,11 @@ require Exporter;
                 $grammar_re
                 $single_string_re
                 $string_re
+                $reserved_re
                /;
 use warnings;
 use strict;
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 my @reserved_words = sort {length $b <=> length $a} 
     qw/auto if break int case long char register continue return
@@ -27,10 +28,10 @@ my @reserved_words = sort {length $b <=> length $a}
        const signed volatile/;
 
 my $reserved_words = join '|', @reserved_words;
-my $reserved_re = qr/\b(?:$reserved_words)\b/;
+our $reserved_re = qr/\b(?:$reserved_words)\b/;
 
 our @fields = qw/comment cpp char_const operator grammar 
-                 number word string/;
+                 number word string reserved/;
 
     # Regular expression to match a /* */ C comment.
 
@@ -64,9 +65,11 @@ our $comment_re = qr/
                        )
                    /x;
 
-# Regular expression to match a C preprocessor instruction
+# Regular expression to match a C preprocessor instruction.
 
-our $cpp_re = qr/^\h*\#(?:
+our $cpp_re = qr/^\h*
+                 \#
+                 (?:
                     $trad_comment_re
                 |
                     [^\\\n]
@@ -164,6 +167,8 @@ our $c_re = qr/
                      (?<grammar>$grammar_re)
                  |
                      (?<number>$number_re)
+                 |
+                     (?<reserved>$reserved_re)
                  |
                      (?<word>$word_re)
                  |
@@ -269,6 +274,5 @@ sub get_line_number
     }
     die "$pos outside bounds";
 }
-
 
 1;

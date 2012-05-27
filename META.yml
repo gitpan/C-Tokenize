@@ -22,4 +22,4 @@ requires:
 resources:
   bugtracker: https://github.com/benkasminbullock/C-Tokenize/issues
   repository: https://github.com/benkasminbullock/C-Tokenize
-version: 0.03
+version: 0.04
