@@ -1,5 +1,13 @@
 Revision history for perl module C::Tokenize
 
+0.07 2013-11-27
+
+* Fix up Changes
+
+0.06 2013-11-27
+
+* Add Changes to repository
+
 0.05 2013-11-27
 
 * Add export tag ':all'.
