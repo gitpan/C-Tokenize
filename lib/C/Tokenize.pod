@@ -16,18 +16,23 @@ C::Tokenize - reduce a C file to a series of tokens
 
 =head1 DESCRIPTION
 
-This module provides
+This module provides a tokenizer which breaks C source code into its
+smallest meaningful components, and the regular expressions which
+match each of these components. For example, the module supplies a
+regular expression L</$comment_re> which matches a C comment line.
 
 =head1 REGULAR EXPRESSIONS
 
-The regular expressions can be imported using, for example,
+The following regular expressions can be imported from this module
+using, for example,
 
     use C::Tokenize '$cpp_re'
 
 to import C<$cpp_re>.
 
-None of the regular expressions does any capturing. If you want to
-capture, add your own parentheses around the regular expression.
+None of the following regular expressions does any capturing. If you
+want to capture, add your own parentheses around the regular
+expression.
 
 =over
 
@@ -98,7 +103,9 @@ L</tokenize>.
     my $out = decomment ('/* comment */');
     # $out = " comment ";
 
-Remove the comments from a string.
+Remove the traditional C comment marks C</*> and C<*/> from the
+beginning and end of a string, leaving only the comment contents. The
+string has to begin and end with comment marks.
 
 =head2 tokenize
 
@@ -169,7 +176,9 @@ A C reserved word, like C<auto> or C<goto>.
 =back
 
 All of the fields which may be captured are available in the variable
-L</@fields>.
+L</@fields> which can be exported from the module:
+
+    use C::Tokenize '@fields';
 
 =item $name
 
@@ -183,8 +192,25 @@ The value of the type. For example, if C<< $token->{name} >> equals
 =item line
 
 The line number of the C file where the token occured. For a
-multi-line comment or preprocessor instruction, the line number always
-refers to the final line.
+multi-line comment or preprocessor instruction, the line number refers
+to the final line.
+
+=back
+
+=head1 EXPORTS
+
+    use C::Tokenize ':all';
+
+exports all the regular expressions from the module.
+
+=head1 SEE ALSO
+
+=over
+
+=item 
+
+The regular expressions contained in this module are shown at this web
+page: L<http://www.lemoda.net/c/c-regex/index.html>.
 
 =back
 
@@ -223,7 +249,8 @@ Ben Bullock, <bkb@cpan.org>
 
 =head1 COPYRIGHT & LICENCE
 
-This package and associated files are copyright (C) 2012 Ben Bullock.
+This package and associated files are copyright (C) 2012-2013 Ben
+Bullock.
 
 You can use, copy, modify and redistribute this package and associated
 files under the Perl Artistic Licence or the GNU General Public

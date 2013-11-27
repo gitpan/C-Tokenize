@@ -17,9 +17,14 @@ require Exporter;
                 $string_re
                 $reserved_re
                /;
+
+our %EXPORT_TAGS = (
+    all => \@EXPORT_OK,
+);
+
 use warnings;
 use strict;
-our $VERSION = 0.04;
+our $VERSION = 0.05;
 
 my @reserved_words = sort {length $b <=> length $a} 
     qw/auto if break int case long char register continue return
@@ -115,7 +120,9 @@ our $operator_re = qr/
 
 # Re to match a C number
 
-our $decimal_re = qr/[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?l?/i;
+our $octal_re = qr/0[0-7]+/;
+
+our $decimal_re = qr/[-+]?([0-9]*\.)?[0-9]+([eE][-+]?[0-9]+)?l?/i;
 
 our $hex_re = qr/0x[0-9a-f]+l?/i;
 
@@ -124,6 +131,8 @@ our $number_re = qr/
                           $hex_re
                       |
                           $decimal_re
+		      |
+			  $octal_re
                       )
                   /x;
 
@@ -141,8 +150,8 @@ our $single_string_re = qr/
                              (?:
                                  "
                                  (?:[^\\"]+|\\[^"]|\\")*
-                                     "
-                                     )
+                                 "
+                             )
                          /x;
 
 
@@ -188,9 +197,12 @@ sub tokenize
 {
     my ($text) = @_;
 
-    my @lines;
+    # This array contains array references, each of which is a pair of
+    # start and end points of a line in $text.
 
-    @lines = get_lines ($text);
+    my @lines = get_lines ($text);
+
+    # The tokens the input is broken into.
 
     my @tokens;
 
@@ -200,6 +212,7 @@ sub tokenize
         if ($match =~ /^\s+$/s) {
             die "Bad match.\n";
         }
+	# Add one to the line number while
         while ($match =~ /\n/g) {
             $line++;
         }
@@ -228,21 +241,11 @@ sub tokenize
         push @tokens, \%element;
     }
 
-    # Check the list of tokens for reserved words. If the word is
-    # reserved, change its type and alter the field value.
-
-    for my $token (@tokens) {
-        if ($token->{type} eq 'word') {
-            my $word = $token->{word};
-            if ($word =~ $reserved_re) {
-                $token->{type} = 'reserved';
-                $token->{reserved} = $word;
-                delete $token->{word};
-            }
-        }
-    }
     return \@tokens;
 }
+
+# The return value is an array containing start and end points of the
+# lines in $text.
 
 sub get_lines
 {
@@ -258,21 +261,6 @@ sub get_lines
         $start = $end + 1;
     }
     return @lines;
-}
-
-# get the line number of the start of the match of the regular
-# expression in $text.
-
-sub get_line_number
-{
-    my ($pos, $lines_ref) = @_;
-    for my $line (1..$#$lines_ref + 1) {
-        my $se = $lines_ref->[$line];
-        if ($pos >= $se->{start} && $pos <= $se->{end}) {
-            return $line;
-        }
-    }
-    die "$pos outside bounds";
 }
 
 1;

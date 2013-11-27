@@ -1,8 +1,9 @@
 use warnings;
 use strict;
-use Test::More tests => 6;
+use Test::More;
 BEGIN { use_ok('C::Tokenize') };
 BEGIN { use_ok('C::Tokenize', '$trad_comment_re', 'decomment') };
+BEGIN { use_ok('C::Tokenize', ':all') };
 use C::Tokenize 'tokenize';
 
 my $tokens;
@@ -25,14 +26,27 @@ $tokens = tokenize ($long_comment);
 
 my $found;
 
-for my $token (@$tokens) {
+my @expect = (
+    ['comment', qr/Globals/],
+    ['reserved', qr/char/],
+    ['word', qr/hardblank/],
+    ['grammar', qr/;/],
+    ['reserved', qr/int/],
+    ['word', qr/charheight/],
+    ['grammar', qr/;/],
+    ['comment', qr/bogus/i],
+);
+
+ok (@$tokens == @expect, "Same number of tokens");
+
+for my $i (0..$#expect) {
+    my $token = $tokens->[$i];
+    my $expect = $expect[$i];
     my $type = $token->{type};
+    ok ($type eq $expect->[0], "$type is $expect->[0]");
     my $value = $token->{$type};
-    if ($type ne 'comment' && $value =~ /charheight/) {
-        $found = 1;
-    }
+    ok ($value =~ $expect->[1], "$value matches $expect->[1]");
 }
-ok ($found, "Parsing of long comments with multiple asterisks.");
 
 # Test for comments within preprocessor instructions
 
@@ -50,6 +64,13 @@ my $comment = "/*$stuff*/";
 my $decommented = decomment ($comment);
 
 ok ($decommented eq $stuff, "Test decomment for multiline comments");
+
+my $octal_1 = '012345';
+like ($octal_1, $C::Tokenize::octal_re, "octal matches");
+my $out = decomment ('/* comment */');
+is ($out, " comment ");
+
+done_testing ();
 
 # Local variables:
 # mode: perl
