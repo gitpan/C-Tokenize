@@ -4,7 +4,7 @@
       "Ben Bullock <bkb@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.8, CPAN::Meta::Converter version 2.120921",
+   "generated_by" : "ExtUtils::MakeMaker version 6.84, CPAN::Meta::Converter version 2.133380",
    "license" : [
       "perl_5"
    ],
@@ -45,5 +45,5 @@
          "url" : "https://github.com/benkasminbullock/C-Tokenize"
       }
    },
-   "version" : "0.07"
+   "version" : "0.08"
 }
